@@ -15,16 +15,24 @@ namespace Business
     {
        BDContactEntities db = new BDContactEntities();
 
-        public int Crud_Contact(Contact _Mod, int Accion)
+        public string  Crud_Contact(Contact _Mod, int Accion)
         {
-            var Result = db.Database.ExecuteSqlCommand("SP_CRUD_CONTACT @ACTION, @ID, @NAME, @PHONE, @MAIL, @FECHA",
+            try
+            {
+                var Result = db.Database.ExecuteSqlCommand("SP_CRUD_CONTACT @ACTION, @ID, @NAME, @PHONE, @MAIL, @FECHA",
                                                         new SqlParameter("@ACTION", Accion),
                                                         new SqlParameter("@ID", _Mod.IdPersona),
                                                         new SqlParameter("@NAME", _Mod.Nombre),
                                                         new SqlParameter("@PHONE", _Mod.Telefono),
                                                         new SqlParameter("@MAIL", _Mod.Email),
-                                                        new SqlParameter("@FECHA", _Mod.FechaNacimiento));
-            return Result;
+                                                        new SqlParameter("@FECHA", Convert.ToDateTime(_Mod.FechaNacimiento)));
+                return Result.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+            
         }
 
         public List<Contact> GetContacts()
